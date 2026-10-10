@@ -29,15 +29,17 @@ def main():
     end = format_date(args.end_date)
 
     counts = get_counts(input, start, end)
-    
-    print_counts(counts)
 
     if args.output_file:
         output = os.path.join(data_path, args.output_file)
         with open(output, "w", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=["complaint", "borough", "count"])
-            writer.writerheader()
-            writer.writerows(counts)
+            writer = csv.writer(f)
+            writer.writerow(["complaint type", "borough", "count"])
+            for complaint, by_borough in counts.items():
+                for borough, n in by_borough.items():
+                    writer.writerow([complaint, borough, n])
+    else:
+        print_counts(counts)
 
 def get_counts(input, start, end):
     counts = {}
